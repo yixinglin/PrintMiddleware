@@ -47,11 +47,14 @@
             this.columnHeaderPrinterName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderPapersize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label8 = new System.Windows.Forms.Label();
+            this.buttonClearPrintQueues = new System.Windows.Forms.Button();
+            this.labelHostName = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(456, 267);
+            this.buttonSave.Location = new System.Drawing.Point(456, 286);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(184, 23);
             this.buttonSave.TabIndex = 0;
@@ -61,15 +64,15 @@
             // 
             // textBoxPort
             // 
-            this.textBoxPort.Location = new System.Drawing.Point(505, 235);
+            this.textBoxPort.Location = new System.Drawing.Point(456, 250);
             this.textBoxPort.Name = "textBoxPort";
-            this.textBoxPort.Size = new System.Drawing.Size(135, 21);
+            this.textBoxPort.Size = new System.Drawing.Size(184, 21);
             this.textBoxPort.TabIndex = 1;
             // 
             // checkBoxAutoStart
             // 
             this.checkBoxAutoStart.AutoSize = true;
-            this.checkBoxAutoStart.Location = new System.Drawing.Point(456, 309);
+            this.checkBoxAutoStart.Location = new System.Drawing.Point(456, 328);
             this.checkBoxAutoStart.Name = "checkBoxAutoStart";
             this.checkBoxAutoStart.Size = new System.Drawing.Size(126, 16);
             this.checkBoxAutoStart.TabIndex = 3;
@@ -79,7 +82,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(458, 239);
+            this.label1.Location = new System.Drawing.Point(454, 231);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(29, 12);
             this.label1.TabIndex = 4;
@@ -88,42 +91,42 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(26, 244);
+            this.label2.Location = new System.Drawing.Point(454, 383);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(197, 12);
+            this.label2.Size = new System.Drawing.Size(185, 12);
             this.label2.TabIndex = 5;
-            this.label2.Text = "#1: Printer - A4 (210 × 297 mm)";
+            this.label2.Text = "#1: Printer - A4 (210×297 mm)";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(26, 267);
+            this.label3.Location = new System.Drawing.Point(454, 406);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(197, 12);
+            this.label3.Size = new System.Drawing.Size(185, 12);
             this.label3.TabIndex = 6;
-            this.label3.Text = "#2: Printer - A6 (105 × 148 mm)";
+            this.label3.Text = "#2: Printer - A6 (105×148 mm)";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(26, 290);
+            this.label4.Location = new System.Drawing.Point(454, 429);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(209, 12);
+            this.label4.Size = new System.Drawing.Size(197, 12);
             this.label4.TabIndex = 7;
-            this.label4.Text = "#3: Printer - Fncode (80 × 40 mm)";
+            this.label4.Text = "#3: Printer - Fncode (80×40 mm)";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(26, 313);
+            this.label5.Location = new System.Drawing.Point(454, 452);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(209, 12);
+            this.label5.Size = new System.Drawing.Size(197, 12);
             this.label5.TabIndex = 8;
-            this.label5.Text = "#4: Printer - Tcode (102 × 35 mm)";
+            this.label5.Text = "#4: Printer - Tcode (102×35 mm)";
             // 
             // buttonPrintTest
             // 
-            this.buttonPrintTest.Location = new System.Drawing.Point(456, 438);
+            this.buttonPrintTest.Location = new System.Drawing.Point(456, 491);
             this.buttonPrintTest.Name = "buttonPrintTest";
             this.buttonPrintTest.Size = new System.Drawing.Size(184, 23);
             this.buttonPrintTest.TabIndex = 9;
@@ -134,7 +137,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(26, 349);
+            this.label6.Location = new System.Drawing.Point(22, 259);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(71, 12);
             this.label6.TabIndex = 11;
@@ -142,11 +145,10 @@
             // 
             // richTextBoxBackgroundMessages
             // 
-            this.richTextBoxBackgroundMessages.Location = new System.Drawing.Point(28, 373);
+            this.richTextBoxBackgroundMessages.Location = new System.Drawing.Point(24, 290);
             this.richTextBoxBackgroundMessages.Name = "richTextBoxBackgroundMessages";
             this.richTextBoxBackgroundMessages.ReadOnly = true;
-            this.richTextBoxBackgroundMessages.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBoxBackgroundMessages.Size = new System.Drawing.Size(404, 88);
+            this.richTextBoxBackgroundMessages.Size = new System.Drawing.Size(404, 224);
             this.richTextBoxBackgroundMessages.TabIndex = 12;
             this.richTextBoxBackgroundMessages.Text = "";
             this.richTextBoxBackgroundMessages.WordWrap = false;
@@ -222,11 +224,42 @@
             this.label8.TabIndex = 20;
             this.label8.Text = "Clients";
             // 
+            // buttonClearPrintQueues
+            // 
+            this.buttonClearPrintQueues.Location = new System.Drawing.Point(322, 248);
+            this.buttonClearPrintQueues.Name = "buttonClearPrintQueues";
+            this.buttonClearPrintQueues.Size = new System.Drawing.Size(106, 23);
+            this.buttonClearPrintQueues.TabIndex = 21;
+            this.buttonClearPrintQueues.Text = "清除打印队列";
+            this.buttonClearPrintQueues.UseVisualStyleBackColor = true;
+            this.buttonClearPrintQueues.Click += new System.EventHandler(this.buttonClearPrintQueues_Click);
+            // 
+            // labelHostName
+            // 
+            this.labelHostName.AutoSize = true;
+            this.labelHostName.Location = new System.Drawing.Point(63, 527);
+            this.labelHostName.Name = "labelHostName";
+            this.labelHostName.Size = new System.Drawing.Size(53, 12);
+            this.labelHostName.TabIndex = 22;
+            this.labelHostName.Text = "hostname";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(22, 527);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(35, 12);
+            this.label10.TabIndex = 23;
+            this.label10.Text = "HOST:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(701, 517);
+            this.ClientSize = new System.Drawing.Size(701, 578);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.labelHostName);
+            this.Controls.Add(this.buttonClearPrintQueues);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.listViewPrinters);
             this.Controls.Add(this.label9);
@@ -276,5 +309,8 @@
         private System.Windows.Forms.ColumnHeader columnHeaderPrinterName;
         private System.Windows.Forms.ColumnHeader columnHeaderPapersize;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button buttonClearPrintQueues;
+        private System.Windows.Forms.Label labelHostName;
+        private System.Windows.Forms.Label label10;
     }
 }

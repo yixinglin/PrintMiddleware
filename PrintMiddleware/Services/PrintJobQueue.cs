@@ -1,7 +1,11 @@
-﻿using PrintMiddleware.Utils;
+﻿using Newtonsoft.Json.Linq;
+using PrinterMiddleware.Services;
+using PrintMiddleware.Utils;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -120,4 +124,84 @@ namespace PrintMiddleware.Services
             _cts.Cancel();
         }
     }
+
+
+    public static class PrintJobValidator
+    {
+        public static bool ValidatePrintJobs(JArray files, out List<PrintJob> validJobs, out string errorMessage)
+        {
+            validJobs = new List<PrintJob>();
+            errorMessage = null;
+
+            if (files == null || files.Count == 0)
+            {
+                errorMessage = "No files provided.";
+                return false;
+            }
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    int printerId = (int)file["printer_id"];
+                    string fileUrl = (string)file["url"];
+
+                    if (string.IsNullOrWhiteSpace(fileUrl))
+                        throw new Exception($"Missing or empty URL for printer #{printerId}");
+
+                    // 打印机名校验
+                    if (!PrinterManager.Exists(printerId))
+                        throw new Exception($"Invalid printer id: #{printerId}");
+
+                    // 打印机ID校验
+                    string printerName = PrinterManager.GetPrinterNameById(printerId);
+                    if (printerName == null)
+                        throw new Exception($"No corresponding printer found for #{printerId}");
+
+                    // URL格式校验
+                    if (!Uri.TryCreate(fileUrl, UriKind.Absolute, out Uri uri) ||
+                        !(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+                    {
+                        throw new Exception($"Invalid URL format for: {fileUrl}");
+                    }
+
+                    // URL可访问性校验（返回状态200）
+                    if (!IsUrlAccessible(fileUrl))
+                    {
+                        throw new Exception($"URL not accessible or not found: {fileUrl}");
+                    }
+
+                    validJobs.Add(new PrintJob(printerId, printerName, fileUrl));
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        private static bool IsUrlAccessible(string url)
+        {
+            try
+            {
+                var request = WebRequest.CreateHttp(url);
+                request.Method = "HEAD";
+                request.Timeout = 8000; // 8s 超时
+
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    return response.StatusCode == HttpStatusCode.OK;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+
 }

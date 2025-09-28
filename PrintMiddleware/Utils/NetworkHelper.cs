@@ -42,5 +42,10 @@ namespace PrintMiddleware.Utils
                 return null; // 解析失败
             }
         }
+
+        public static string GetSelfHostName()
+        {
+            return Dns.GetHostName();
+        }
     }
 }

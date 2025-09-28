@@ -15,7 +15,8 @@ namespace PrintMiddleware.Forms
     public partial class MainForm : Form
     {
 
-        private NotifyIcon trayIcon;
+        private NotifyIcon trayIcon;        
+
         private ContextMenuStrip trayMenu;
 
         private WebSocketServerManager wsServer;
@@ -26,6 +27,7 @@ namespace PrintMiddleware.Forms
 
         private HashSet<string> clientIpSet = new HashSet<string>();
 
+        private bool _allowClose = false;
 
         public MainForm()
         {
@@ -116,6 +118,7 @@ namespace PrintMiddleware.Forms
             {
                 textBoxAllWsAddresses.Text += $"ws://{ip}:{port}{Environment.NewLine}";
             }
+            labelHostName.Text = NetworkHelper.GetSelfHostName();
 
         }
 
@@ -123,7 +126,11 @@ namespace PrintMiddleware.Forms
         {
             trayMenu = new ContextMenuStrip();
             trayMenu.Items.Add("Open", null, (s, e) => this.Show());
-            trayMenu.Items.Add("Exit", null, (s, e) => Application.Exit());
+            trayMenu.Items.Add("Exit", null, (s, e) =>
+            {
+                _allowClose = true;
+                this.Close(); // 触发 OnFormClosing，但不会被 Cancel
+            });
 
             string iconPath = Path.Combine("Assets", "icon.ico");
             if (File.Exists(iconPath))
@@ -144,6 +151,8 @@ namespace PrintMiddleware.Forms
                 Visible = true
             };
             trayIcon.DoubleClick += (s, e) => this.Show();
+
+            TrayNotifier.Init(trayIcon);
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -163,12 +172,11 @@ namespace PrintMiddleware.Forms
             }
 
             RefreshNetworkDisplay();
-            MessageBox.Show("设置已保存");
+            MessageBox.Show("Settings have been saved");
         }
 
         private async Task buttonPrintTest_ClickAsync(object sender, EventArgs e)
-        {
-            //string sumatraPath = @"Assets\SumatraPDF.exe";
+        {            
             string pdfPath = @"G:\hansagt\Print-Shop\middleware\sumatra\sumatrapdfcache\05050.pdf";
             string printerName = "#2. Virtual PDF Printer_LB (Label) @ PC230-2";
 
@@ -198,14 +206,19 @@ namespace PrintMiddleware.Forms
             _ = buttonPrintTest_ClickAsync(sender, e);
         }
 
-
-
-        //protected override void OnFormClosing(FormClosingEventArgs e)
-        //{
-        //    e.Cancel = true;
-        //    this.Hide(); // 最小化到托盘
-        //}
-
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (!_allowClose)
+            {
+                e.Cancel = true; // 阻止关闭
+                Hide();     // 隐藏到托盘
+                TrayNotifier.Show("Application", "Program has been minimized"); 
+            }
+            else
+            {
+                base.OnFormClosing(e); // 允许关闭
+            }
+        }
 
         private void OnClientConnected(string ip, string hostname)
         {
@@ -249,5 +262,28 @@ namespace PrintMiddleware.Forms
             }
         }
 
+        private void buttonClearPrintQueues_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show(
+            "Are you sure you want to clear all print jobs from all printers?",
+            "Confirm Clear",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning);
+
+            if (result != DialogResult.Yes)
+                return;
+
+            try
+            {
+                int clearedCount = PrinterManager.ClearAllPrintQueues();
+                Logger.Info($"Cleared {clearedCount} print job(s) from all queues.");
+                TrayNotifier.Show("Print Queue Cleared", $"Cleared {clearedCount} job(s) from all printers.");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to clear print queues", ex);
+                TrayNotifier.Show("Error", "Failed to clear print queues.", ToolTipIcon.Error);
+            }
+        }
     }
 }

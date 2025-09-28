@@ -1,7 +1,9 @@
-﻿using System;
+﻿using PrintMiddleware.Utils;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Linq;
+using System.Management;
 
 namespace PrinterMiddleware.Services
 {
@@ -104,6 +106,28 @@ namespace PrinterMiddleware.Services
                 // Logger.Error($"读取纸张尺寸失败: {printerName}", ex);
                 return "Unknown";
             }
+        }
+
+        public static int ClearAllPrintQueues()
+        {
+            int deletedCount = 0;
+
+            // Win32_PrintJob 控制系统中的所有打印任务
+            var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PrintJob");
+
+            foreach (ManagementObject printJob in searcher.Get())
+            {
+                try
+                {
+                    printJob.Delete();
+                    deletedCount++;
+                }
+                catch
+                {                                        
+                }
+            }
+
+            return deletedCount;
         }
 
     }
