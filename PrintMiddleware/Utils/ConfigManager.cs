@@ -1,28 +1,24 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace PrintMiddleware.Utils
-{    
+{
     internal class ConfigManager
     {
         private static string configPath = "config.json";
         private static Dictionary<string, string> config;
 
-        static ConfigManager() 
-        { 
-            if(File.Exists(configPath))
+        static ConfigManager()
+        {
+            if (File.Exists(configPath))
             {
                 config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(configPath));
-            } else
+            }
+            else
             {
                 config = new Dictionary<string, string>();
-            }            
+            }
         }
 
         public static string Get(string key)
@@ -36,5 +32,5 @@ namespace PrintMiddleware.Utils
             File.WriteAllText(configPath, JsonConvert.SerializeObject(config, Formatting.Indented));
         }
 
-    }    
+    }
 }
