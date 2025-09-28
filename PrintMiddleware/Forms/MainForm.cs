@@ -21,7 +21,7 @@ namespace PrintMiddleware.Forms
         private WebSocketServerManager wsServer;
         private PrintJobQueue jobQueue;
 
-        private Queue<(string Level, string Timestamp, string Message)> logBuffer = new Queue<(string Level, string Timestamp, string Message)>();
+        private Queue<(string, string, string)> logBuffer = new Queue<(string, string, string)>();
         private const int maxLogLines = 50;
 
         private HashSet<string> clientIpSet = new HashSet<string>();
@@ -77,25 +77,20 @@ namespace PrintMiddleware.Forms
 
         private void LoadPrinters()
         {
-            //listBoxPrinters.Items.Clear();
-            //var printers = new List<string>();
-            //foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
-            //{
-            //    if (printer.StartsWith("#"))
-            //    {
-            //        printers.Add(printer);
-            //    }
-            //}
-            //printers.Sort(StringComparer.CurrentCultureIgnoreCase);
-            //listBoxPrinters.Items.AddRange(printers.ToArray());            
-            //Logger.Info("Loaded printers");
+            listViewPrinters.Items.Clear();
 
-            listBoxPrinters.Items.Clear();
             foreach (string printer in PrinterManager.GetValidNumberedPrinters())
             {
-                listBoxPrinters.Items.Add(printer);
+                string paperSize = PrinterManager.GetDefaultPaperSize(printer);
+
+                var item = new ListViewItem(printer);         // 第一列：打印机名
+                item.SubItems.Add(paperSize);                 // 第二列：纸张尺寸
+
+                listViewPrinters.Items.Add(item);
             }
+
             Logger.Info("Loaded printers");
+
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -117,9 +112,6 @@ namespace PrintMiddleware.Forms
         {
             List<string> ipList = NetworkHelper.GetLocalIPv4();
             string port = textBoxPort.Text.Trim();
-            
-            //labelWsAddress.Text = $"ws://{ip}:{port}";
-
             foreach(string ip in ipList)
             {
                 textBoxAllWsAddresses.Text += $"ws://{ip}:{port}{Environment.NewLine}";
@@ -215,27 +207,29 @@ namespace PrintMiddleware.Forms
         //}
 
 
-        private void OnClientConnected(string ip)
+        private void OnClientConnected(string ip, string hostname)
         {
+            string ip_content = $"[{ip}] {hostname}";
             if (listBoxConnectedClients.InvokeRequired)
             {
-                listBoxConnectedClients.Invoke(new Action(() => AddClientIp(ip)));
+                listBoxConnectedClients.Invoke(new Action(() => AddClientIp(ip_content)));
             }
             else
-            {
-                AddClientIp(ip);
+            {                
+                AddClientIp(ip_content);
             }
         }
 
-        private void OnClientDisconnected(string ip)
+        private void OnClientDisconnected(string ip, string hostname)
         {
+            string ip_content = $"[{ip}] {hostname}";
             if (listBoxConnectedClients.InvokeRequired)
             {
-                listBoxConnectedClients.Invoke(new Action(() => RemoveClientIp(ip)));
+                listBoxConnectedClients.Invoke(new Action(() => RemoveClientIp(ip_content)));
             }
             else
-            {
-                RemoveClientIp(ip);
+            {                
+                RemoveClientIp(ip_content);
             }
         }
 

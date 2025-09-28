@@ -29,5 +29,18 @@ namespace PrintMiddleware.Utils
 
             return ipList;
         }
+
+        public static string GetHostNameFromIp(string ip)
+        {
+            try
+            {
+                var entry = Dns.GetHostEntry(ip);
+                return entry.HostName;
+            }
+            catch
+            {
+                return null; // 解析失败
+            }
+        }
     }
 }

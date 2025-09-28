@@ -70,5 +70,41 @@ namespace PrinterMiddleware.Services
         {
             return GetPrinterNameById(printerId) != null;
         }
+
+        /// <summary>
+        /// 获取指定打印机的默认纸张尺寸（如 "#1 HP LaserJet" -> "A4 (210 x 297 mm)"）
+        /// </summary>
+        public static string GetDefaultPaperSize(string printerName)
+        {
+            if (string.IsNullOrWhiteSpace(printerName))
+                return "Unknown";
+
+            try
+            {
+                var settings = new PrinterSettings
+                {
+                    PrinterName = printerName
+                };
+
+                if (!settings.IsValid)
+                    return "Invalid Printer";
+
+                var paper = settings.DefaultPageSettings.PaperSize;
+
+                // 宽高是以百分之一英寸为单位
+                // 换算成毫米
+                float widthMm = paper.Width * 0.254f;
+                float heightMm = paper.Height * 0.254f;
+
+                // 保留 0 位小数，更易读
+                return $"{paper.PaperName} ({Math.Round(widthMm)} x {Math.Round(heightMm)} mm)";
+            }
+            catch (Exception ex)
+            {
+                // Logger.Error($"读取纸张尺寸失败: {printerName}", ex);
+                return "Unknown";
+            }
+        }
+
     }
 }

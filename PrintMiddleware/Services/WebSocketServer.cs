@@ -15,8 +15,8 @@ namespace PrintMiddleware.Services
         private List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
         private PrintJobQueue jobQueue;
 
-        public static event Action<string> ClientConnected;
-        public static event Action<string> ClientDisconnected;
+        public static event Action<string, string> ClientConnected;
+        public static event Action<string, string> ClientDisconnected;
 
         public WebSocketServerManager(int port, PrintJobQueue queue)
         {
@@ -31,18 +31,20 @@ namespace PrintMiddleware.Services
             {
                 socket.OnOpen = () =>
                 {
-                    var ip = socket.ConnectionInfo.ClientIpAddress;                                        
+                    var ip = socket.ConnectionInfo.ClientIpAddress;
+                    var hostname = NetworkHelper.GetHostNameFromIp(ip);
                     allSockets.Add(socket);
-                    Logger.Info($"[WS] Client connected: {socket.ConnectionInfo.ClientIpAddress}");
-                    ClientConnected?.Invoke(ip);
+                    Logger.Info($"[WS] Client connected: {socket.ConnectionInfo.ClientIpAddress} / {hostname}");
+                    ClientConnected?.Invoke(ip, hostname);
                 };
 
                 socket.OnClose = () =>
                 {
-                    var ip = socket.ConnectionInfo.ClientIpAddress;                    
+                    var ip = socket.ConnectionInfo.ClientIpAddress;
+                    var hostname = NetworkHelper.GetHostNameFromIp(ip);
                     allSockets.Remove(socket);
                     Logger.Info("[WS] Client disconnected");
-                    ClientDisconnected?.Invoke(ip);
+                    ClientDisconnected?.Invoke(ip, hostname);
                 };
 
                 socket.OnMessage = message =>
