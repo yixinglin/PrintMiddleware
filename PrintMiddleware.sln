@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintMiddleware", "PrintMiddleware\PrintMiddleware.csproj", "{E963FCDF-1CAB-4E35-BE08-98F686346B7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{CC116F75-7613-4BDE-BDAE-E372A2E7881F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Publisher", "Publisher\Publisher.csproj", "{E7D12EA8-89FD-4C2D-B8B8-E4B82A548455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{E963FCDF-1CAB-4E35-BE08-98F686346B7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E963FCDF-1CAB-4E35-BE08-98F686346B7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E963FCDF-1CAB-4E35-BE08-98F686346B7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC116F75-7613-4BDE-BDAE-E372A2E7881F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC116F75-7613-4BDE-BDAE-E372A2E7881F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC116F75-7613-4BDE-BDAE-E372A2E7881F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC116F75-7613-4BDE-BDAE-E372A2E7881F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7D12EA8-89FD-4C2D-B8B8-E4B82A548455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7D12EA8-89FD-4C2D-B8B8-E4B82A548455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7D12EA8-89FD-4C2D-B8B8-E4B82A548455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7D12EA8-89FD-4C2D-B8B8-E4B82A548455}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
