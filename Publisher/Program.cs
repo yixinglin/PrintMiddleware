@@ -21,12 +21,13 @@ namespace Publisher
             {
                 Console.WriteLine("发生错误: " + ex.Message);
             }
+            Console.ReadKey();
         }
 
         static async Task Run()
         {
             string server = "http://localhost:5018";
-            string appName = "print-middleware";
+            string appName = "print-middleware";            
 
             Console.OutputEncoding = Encoding.UTF8;
 
@@ -56,6 +57,7 @@ namespace Publisher
             // === 打包路径 ===
             string solutionDir = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\.."));
             string releaseBaseDir = Path.Combine(solutionDir, "PrintMiddleware", "bin", "Release");
+            string historyDir = "history";
 
             if (!Directory.Exists(releaseBaseDir))
             {
@@ -100,7 +102,7 @@ namespace Publisher
                         var filePath = uploadObj["filename"]?.ToString();
                         if (string.IsNullOrEmpty(filePath))
                         {
-                            Console.WriteLine("上传失败，未获取到 file_path");
+                            Console.WriteLine("上传失败，未获取到 file_path");                            
                             return;
                         }
 
@@ -119,6 +121,14 @@ namespace Publisher
                         var jsonPayload = new StringContent(payload.ToString(), Encoding.UTF8, "application/json");
                         var versionResponse = await client.PostAsync(versionUrl, jsonPayload);
                         string versionJson = await versionResponse.Content.ReadAsStringAsync();
+                        // status code
+                        if (!versionResponse.IsSuccessStatusCode)
+                        {
+                            Console.WriteLine("版本发布失败: " + versionResponse.StatusCode);
+                            Console.WriteLine(versionJson);
+                            File.Delete(zipFile);
+                            return;
+                        }                        
                         try
                         {
                             var parsed = JToken.Parse(versionJson);
@@ -128,9 +138,17 @@ namespace Publisher
                         catch
                         {                            
                             Console.WriteLine("版本发布成功: " + versionJson);
-                        }
+                        }                        
                     }
                 }
+            }
+            if (!File.Exists(historyDir)) Directory.CreateDirectory(historyDir);
+            if (File.Exists(zipFile))
+            {
+                // 移动到历史记录目录
+                string historyFile = Path.Combine(historyDir, Path.GetFileName(zipFile));
+                if (File.Exists(historyFile)) File.Delete(historyFile);
+                File.Move(zipFile, historyFile);
             }
         }
 

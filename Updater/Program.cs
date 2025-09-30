@@ -22,6 +22,8 @@ namespace Updater
             {
                 Console.WriteLine("更新失败: " + ex.Message);
             }
+            // 按任意键退出
+            Console.ReadKey();
         }
 
         static async Task Run()
@@ -89,7 +91,7 @@ namespace Updater
                 if (Directory.Exists(appDir))
                 {
                     // 先备份
-                    string backupDir = appDir + "_backup_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                    string backupDir = Path.Combine("backup", DateTime.Now.ToString("yyyyMMddHHmmss"));
                     DirectoryCopy(appDir, backupDir, true);
                     Console.WriteLine("已备份旧版本到: " + backupDir);
                 }
